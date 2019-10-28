@@ -1,13 +1,15 @@
 import numpy as np
 import torch
 import scipy
+from collections import defaultdict
+from pdb import set_trace as bb
 
 
 class Multinomial(object):
     """
     multinomial sampler
     """
-    def __init__(self):
+    def __init__(self, p, n):
         pass
 
     def sample(self):
@@ -62,11 +64,121 @@ def sample_vector():
 
 def test_sample_vector():
     pass
+
+
 # ======================================
+class Graph:
+    def __init__(self):
+        # {node: edges}
+        self.graph = defaultdict(list)
+
+    def addEdge(self, u, v):
+        # directed graph u -> v
+        self.graph[u].append(v)
+
+
+def _do_dfs(node, graph, visited, out):
+    visited[node] = True
+    out.append(node)
+    for i in graph[node]:
+        if not visited[i]:
+            _do_dfs(i, graph, visited, out)
+
+def dfs(node, graph):
+    # iterative method
+#     s = Stack()
+#     s.push(root)
+#     out = []
+#     while not s.is_empty():
+#         curr = s.pop()
+#         if curr.right is not None:
+#             s.push(curr.right)
+#         if curr.left is not None:
+#             s.push(curr.left)
+#         out.append(curr)
+#     return out
+    # recursive
+    graph = graph.graph
+    visited = [False] * len(graph)
+    out = []
+    _do_dfs(node, graph, visited, out)
+    return out
+
+
+def test_dfs():
+    g = Graph()
+    g.addEdge(0, 1)
+    g.addEdge(0, 2)
+    g.addEdge(1, 2)
+    g.addEdge(2, 0)
+    g.addEdge(2, 3)
+    g.addEdge(3, 3)
+    out = dfs(2, g)
+    assert out == [2, 0, 1, 3], out
+    out = dfs(0, g)
+    assert out == [0, 1, 2, 3], out
+
+
+# ======================================
+def bfs(root, graph):
+    q = []
+    q.append(root)
+    visited = [False] * len(graph)
+    visited[root] = True
+    out = []
+    while len(q):
+        curr = q.pop(0)
+        out.append(curr)
+        for i in graph[curr]:
+            if not visited[i]:
+                q.append(i)
+                visited[i] = True
+    return out
+
+
+def test_bfs():
+    g = Graph()
+    g.addEdge(0, 1)
+    g.addEdge(0, 2)
+    g.addEdge(1, 2)
+    g.addEdge(2, 0)
+    g.addEdge(2, 3)
+    g.addEdge(3, 3)
+    out = bfs(2, g.graph)
+    assert out == [2, 0, 3, 1], out
+    g.addEdge(0, 4)
+    g.addEdge(4, 3)
+    out = bfs(0, g.graph)
+    assert out == [0, 1, 2, 4, 3], out
+
+
+# ======================================
+def convolve(mat, stride):
+    # perform a convolution
+    pass
+
+def test_convolve():
+    assert True
+
+
+# ======================================
+def permute(string):
+    # perform a convolution
+    pass
+
+def test_permute():
+    assert True
+
+
+
 def main():
 #     test_multinomial()
     test_sparse_dot()
     test_sample_vector()
+    test_bfs()
+    test_dfs()
+    test_convolve()
+    test_permute()
     print("everything passed!")
 
 
