@@ -9,11 +9,24 @@ class Multinomial(object):
     """
     multinomial sampler
     """
-    def __init__(self, p, n):
+    def __init__(self, p, v):
+        self.p = p
+        self.v = v
+
+    def sample(self, n):
+        for _ in range(n):
+            sample = np.random.random()
         pass
 
-    def sample(self):
-        pass
+    def categorical_sampler(p, v):
+        if len(p) != len(v):
+            raise ValueError("mismatch")
+        sampled = np.random.random()
+        for p_i, v_i in zip(p, v):
+            sampled -= p_i
+            if sampled <= 0:
+                return v_i
+        return v[-1]
 
 def test_multinomial():
     sampler = Multinomial()
@@ -158,17 +171,55 @@ def convolve(mat, stride):
     pass
 
 def test_convolve():
+    print('convolve not implemented')
     assert True
 
 
 # ======================================
 def permute(string):
-    # perform a convolution
     pass
 
 def test_permute():
+    print('permute not implemented')
     assert True
 
+
+# ======================================
+# DYNAMIC PROGRAMMING
+def permute(string):
+    pass
+
+def test_permute():
+    print('permute not implemented')
+    assert True
+
+
+# ======================================
+# BITWISE OPERATIONS
+
+def swap(a, b):
+    # swap two numbers
+    a = a + b
+    b = a - b
+    a = a - b
+    return a, b
+
+def bit_swap(a, b):
+    # swap two numbers
+    a = a ^ b
+    b = b ^ a
+    a = a ^ b
+    return a, b
+
+def test_swap():
+    x = 2
+    y = 64
+    x, y = swap(x, y)
+    assert x == 64
+    assert y == 2
+    x, y = bit_swap(x, y)
+    assert x == 2
+    assert y == 64
 
 
 def main():
@@ -179,7 +230,8 @@ def main():
     test_dfs()
     test_convolve()
     test_permute()
-    print("everything passed!")
+    test_swap()
+    print("ALL TESTS PASSED!")
 
 
 if __name__ == "__main__":
