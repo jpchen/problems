@@ -186,12 +186,65 @@ def test_permute():
 
 # ======================================
 # DYNAMIC PROGRAMMING
-def permute(string):
-    pass
+def lis(arr):
+    # longest increasing subsequence
+    lis_arr = [1] * len(arr)
+    for i in range(1, len(arr)):
+        for j in range(i):
+            if arr[i] > arr[j]:
+                lis_arr[i] = max(lis_arr[i], 1 + lis_arr[j])
+    return max(lis_arr)
 
-def test_permute():
-    print('permute not implemented')
-    assert True
+def test_lis():
+    arr = [50, 3, 10, 7, 40, 80]
+    out = lis(arr)
+    assert out == len([3, 7, 40, 80])
+
+
+def l_sum_subarray(arr):
+    max_so_far = 0
+    max_ending_here = 0
+    start, end = 0, 0
+    for i in range(len(arr)):
+        max_ending_here += arr[i]
+        if max_so_far < max_ending_here:
+            end = i + 1 # python drops the last element in a[start:end]
+            max_so_far = max(max_so_far, max_ending_here)
+        if max_ending_here < 0:
+            start = i + 1
+            max_ending_here = 0
+    return max_so_far, arr[start:end]
+
+def test_l_sum_subarray():
+    arr = [-2, -3, 4, -1, -2, 1, 5, -3]
+    out, sub = l_sum_subarray(arr)
+    assert out == 7
+    assert sub == [4, -1, -2, 1, 5], sub
+
+
+def knapsack(val, weight, limit):
+    assert len(val) == len(weight)
+    a = np.zeros([len(val) + 1, limit + 1])
+    for i in range(len(val) + 1):
+        for j in range(limit + 1):
+            if i == 0 or j == 0:
+                continue
+            if weight[i - 1] <= j:
+                # can fit
+                a[i, j] = max(a[i - 1, j - weight[i - 1]] + val[i - 1], a[i - 1, j])
+            else:
+                # cant fit new item
+                a[i, j] = a[i-1, j]
+    assert a.max() == a[len(val), limit]
+    return a.max()
+
+
+def test_knapsack():
+    val = [50, 80, 80, 90, 150]
+    wt = [10, 12, 8, 20, 30]
+    W = 50
+    score = knapsack(val, wt, W)
+    assert score == 310, score
 
 
 # ======================================
@@ -231,6 +284,9 @@ def main():
     test_convolve()
     test_permute()
     test_swap()
+    test_lis()
+    test_l_sum_subarray()
+    test_knapsack()
     print("ALL TESTS PASSED!")
 
 
