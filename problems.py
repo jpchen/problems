@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import scipy
+import math
 from collections import defaultdict
 from pdb import set_trace as bb
 
@@ -176,14 +177,61 @@ def test_convolve():
 
 
 # ======================================
-def permute(string):
-    pass
+def permute(lst):
+    if len(lst) == 0:
+        return []
+    if len(lst) == 1:
+        return [lst]
+    out = []
+    for i in range(len(lst)):
+        # make the ith element first
+        m = lst[i]
+        # get the remaining list
+        remaining = lst[:i] + lst[i+1:]
+        for p in permute(remaining):
+            # everything in this loop is with ith element first
+            out.append([m] + p)
+    return out
 
 def test_permute():
-    print('permute not implemented')
-    assert True
+    out = permute([1,2,3])
+    ans = [
+      [1,2,3],
+      [1,3,2],
+      [2,1,3],
+      [2,3,1],
+      [3,1,2],
+      [3,2,1]
+    ]
+    for i in ans:
+        assert i in out
 
 
+def mypow(x, n):
+    out = x
+    if n == 0:
+        return 1
+    mod2 = math.floor(math.log2(abs(n)))
+    for i in range(mod2):
+        out *= out
+    remaining = abs(n) - 2**mod2
+    for i in range(remaining):
+        out *= x
+    if n < 0:
+        return 1. / out
+    return out
+
+def test_mypow():
+    out = mypow(2,4)
+    assert out == 2 ** 4, out
+    out = mypow(2,3)
+    assert out == 2 ** 3, out
+    out = mypow(3,5)
+    assert out == 3 ** 5
+    out = mypow(2, -3)
+    assert out == 2 ** -3, out
+    out = mypow(3,-5)
+    assert out == 3 ** -5, out
 # ======================================
 # DYNAMIC PROGRAMMING
 def lis(arr):
@@ -275,6 +323,7 @@ def test_swap():
     assert y == 64
 
 
+# ======================================
 def main():
 #     test_multinomial()
     test_sparse_dot()
@@ -287,6 +336,7 @@ def main():
     test_lis()
     test_l_sum_subarray()
     test_knapsack()
+    test_mypow()
     print("ALL TESTS PASSED!")
 
 
