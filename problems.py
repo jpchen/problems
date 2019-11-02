@@ -177,6 +177,27 @@ def test_convolve():
 
 
 # ======================================
+# BST
+def bst(mat, stride):
+    # perform a convolution
+    pass
+
+def test_bst():
+    print('convolve not implemented')
+    assert True
+
+# ======================================
+# Linked list
+def bst(mat, stride):
+    # perform a convolution
+    pass
+
+def test_bst():
+    print('convolve not implemented')
+    assert True
+
+# ======================================
+# RECURSION
 def permute(lst):
     if len(lst) == 0:
         return []
@@ -207,6 +228,41 @@ def test_permute():
         assert i in out
 
 
+def subarray(arr, start, end, out):
+    if end == len(arr):
+        return out
+    if start > end:
+        return subarray(arr, 0, end + 1, out)
+    else:
+        out.append(arr[start:end + 1])
+        return subarray(arr, start + 1, end, out)
+
+def test_subarray():
+    arr = [1,2,3]
+    out = subarray(arr, 0, 0, [])
+    exp = [[1],
+           [1, 2],
+           [2],
+           [1, 2, 3],
+           [2, 3],
+           [3]]
+    assert len(out) == len(exp)
+    for i in out:
+        assert i in exp
+
+
+def rev_stack(stack, new_stack):
+    if len(stack) == 0:
+        return new_stack
+    new_stack.append(stack.pop())
+    return rev_stack(stack, new_stack)
+
+def test_rev_stack():
+    stack = [1,2,3, 4]
+    out = rev_stack(stack, [])
+    assert out == [4, 3, 2, 1]
+
+# ======================================
 def mypow(x, n):
     out = x
     if n == 0:
@@ -232,6 +288,8 @@ def test_mypow():
     assert out == 2 ** -3, out
     out = mypow(3,-5)
     assert out == 3 ** -5, out
+
+
 # ======================================
 # DYNAMIC PROGRAMMING
 def lis(arr):
@@ -337,6 +395,8 @@ def main():
     test_l_sum_subarray()
     test_knapsack()
     test_mypow()
+    test_subarray()
+    test_rev_stack()
     print("ALL TESTS PASSED!")
 
 
