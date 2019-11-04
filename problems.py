@@ -96,6 +96,8 @@ def _do_dfs(node, graph, visited, out):
     out.append(node)
     for i in graph[node]:
         if not visited[i]:
+            # check condition here
+            # ....
             _do_dfs(i, graph, visited, out)
 
 def dfs(node, graph):
@@ -142,6 +144,8 @@ def bfs(root, graph):
     out = []
     while len(q):
         curr = q.pop(0)
+        # check condition here
+        # ....
         out.append(curr)
         for i in graph[curr]:
             if not visited[i]:
@@ -288,6 +292,36 @@ def test_mypow():
     assert out == 2 ** -3, out
     out = mypow(3,-5)
     assert out == 3 ** -5, out
+
+
+
+# ======================================
+# TREES
+def same_bsts(a, b):
+    # check if bst equal without building trees
+    # recursively check if elements greater and less appear
+    # in same order
+    if len(a) == 0:
+        return True
+    for i in a:
+        greater_a = set(x for x in a if x > i)
+        greater_b = set(x for x in b if x > i)
+        if greater_a != greater_b:
+            return False
+        less_a = set(x for x in a if x < i)
+        less_b = set(x for x in b if x < i)
+        if less_a != less_b:
+            return False
+        return same_bsts(a[1:], b)
+
+
+def test_same_bsts():
+    a = [8, 3, 6, 1, 4, 7, 10, 14, 13]
+    b = [8, 10, 14, 3, 6, 4, 1, 7, 13]
+    c = [8, 10, 14, 3, 7, 6, 4, 1, 13]
+    assert same_bsts(a, b)
+    assert not same_bsts(a, c)
+
 
 
 # ======================================
