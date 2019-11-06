@@ -6,6 +6,7 @@ from collections import defaultdict
 from pdb import set_trace as bb
 
 
+# twitter
 class Multinomial(object):
     """
     multinomial sampler
@@ -34,8 +35,68 @@ def test_multinomial():
     for i in range(10000):
         s = sampler.sample()
 
-
 # ======================================
+# facebook
+
+def _check_if_valid(string):
+    left = [0, 0]
+    right = [0, 0]
+    for i in string:
+        if i == "[":
+            left[1] += 1
+        elif i == "(":
+            left[0] += 1
+        elif i == "]":
+            if left[1]:
+                left[1] -= 1
+            else:
+                right[1] += 1
+        elif i == ")":
+            if left[0]:
+                left[0] -= 1
+            else:
+                right[0] += 1
+    # return how many need to be removed
+    return left, right
+
+
+def rm_bad_parens(string):
+    left, right = _check_if_valid(string)
+    copy = extra.copy()
+    str_copy = string.copy()
+    out = set()
+    for i in extra:
+        for l in str_copy:
+            if i == l:
+                str_copy[:i] + str_copy[i+1:]
+    return out
+
+
+def test_rm_bad_parens():
+    x = "[([)])"
+#     assert not _check_if_valid(x) == []
+    x = "[(([]))]"
+    x = "[(([]]))]"
+
+
+def merge_intervals(arr):
+    out = []
+    arr.sort(key = lambda x: x[0])
+    for i in arr:
+        if not out or i[0] > out[-1][1]:
+            out.append(i)
+        else:
+            out[-1][1] = max(out[-1][1], i[1])
+    return out
+
+
+def test_merge_intervals():
+    tst = [[1,3],[2,6],[8,10],[15,18]]
+    out = merge_intervals(tst)
+    expected = [[1,6],[8,10],[15,18]]
+    assert expected == out
+# ======================================
+# FAIR
 class SparseVector(object):
     """
     data type to store sparse vectors
@@ -79,6 +140,58 @@ def sample_vector():
 def test_sample_vector():
     pass
 
+
+# ======================================
+def find_pivot(arr):
+    sum_ = sum(arr)
+    accum = 0
+    for i in range(len(arr) - 1):
+        accum += arr[i]
+        sum_ -= arr[i]
+        if accum == sum_ - arr[i+1]:
+            return i+1
+    return -1
+
+
+def test_find_pivot():
+    out = find_pivot([1, 7, 3, 6, 5, 6])
+    assert out == 3
+
+
+def find_deadlock(arr):
+    graph = defaultdict(list)
+    graph_mutex = defaultdict(list)
+    for idx, i in enumerate(arr):
+        id, status, mutex = map(int, i.split(' '))
+        bb()
+        if status == 0:
+            if id in graph_mutex[mutex]:
+                list_of_threads = graph_mutex[mutex].copy()
+                while list_of_threads:
+                    thread = list_of_thread.pop(0)
+                return i + 1
+            graph[id].append(mutex)
+            graph_mutex[mutex].append(id)
+        if status == 1:
+            graph[id].remove(mutex)
+            graph_mutex[mutex].remove(id)
+    return 0
+
+
+def test_find_deadlock():
+    lines = ['1 0 1',
+             '2 0 2',
+             '2 0 1',
+             '1 0 2',]
+    out = find_deadlock(lines)
+    assert out == 4
+    lines = ['1 0 1',
+             '2 0 2',
+             '2 1 1',
+             '1 1 1',
+             '2 0 1',]
+    out = find_deadlock(lines)
+    assert out == 0
 
 # ======================================
 class Graph:
@@ -190,15 +303,6 @@ def test_bst():
     print('convolve not implemented')
     assert True
 
-# ======================================
-# Linked list
-def bst(mat, stride):
-    # perform a convolution
-    pass
-
-def test_bst():
-    print('convolve not implemented')
-    assert True
 
 # ======================================
 # RECURSION
@@ -431,6 +535,10 @@ def main():
     test_mypow()
     test_subarray()
     test_rev_stack()
+    test_find_pivot()
+    test_merge_intervals()
+#     test_find_deadlock()
+#     test_rm_bad_parens()
     print("ALL TESTS PASSED!")
 
 
