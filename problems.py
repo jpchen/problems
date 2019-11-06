@@ -193,6 +193,52 @@ def test_find_deadlock():
     out = find_deadlock(lines)
     assert out == 0
 
+
+def cpu_process_intervals(arr):
+    stack = []
+    out = defaultdict(list)
+    for event in arr:
+        x = event.split(' ')
+        id = x[0]
+        start = x[1] == 'True'
+        time = int(x[2])  # can be float
+        if len(stack) == 0:
+            assert start  # cant stop nonexistent event
+            stack.append([id, time])
+        elif start:
+            # preempt different job
+            if stack[-1][0] != id:
+                out[stack[-1][0]].append([stack[-1][1], time])
+            # same job
+            stack.append([id, time])
+        elif not start:
+            old = stack.pop()
+            assert old[0] == id
+            out[id].append([old[1], time])
+            if stack and stack[-1][0] != id:
+                # resume the last job
+                stack[-1][1] = time
+    return out
+
+
+def test_cpu_process_intervals():
+    input = ['f1 True 0',
+        'f2 True 2',
+        'f1 True 5',
+        'f1 False 7',
+        'f2 False 10',
+        'f3 True 11',
+        'f3 False 12',
+        'f1 False 15',
+        'f4 True 16',
+        'f4 False 19',
+        ]
+    out = cpu_process_intervals(input)
+    assert out['f1'] == [[0,2], [5, 7], [10, 11], [12, 15]]
+    assert out['f2'] == [[2,5], [7, 10]]
+    assert out['f3'] == [[11, 12]]
+    assert out['f4'] == [[16, 19]]
+
 # ======================================
 class Graph:
     def __init__(self):
@@ -537,6 +583,7 @@ def main():
     test_rev_stack()
     test_find_pivot()
     test_merge_intervals()
+    test_cpu_process_intervals()
 #     test_find_deadlock()
 #     test_rm_bad_parens()
     print("ALL TESTS PASSED!")
