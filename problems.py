@@ -330,11 +330,33 @@ def test_bfs():
 
 
 # ======================================
-def convolve(mat, stride):
-    # perform a convolution
-    pass
+# snapchat and tesla
+def conv_2d(input_tensor, weight, kernel_size):
+    # FIXME this doesnt work
+    h_out = input_tensor.shape[2] - weight.shape[0] + 1
+    w_out = input_tensor.shape[3] - weight.shape[1] + 1
+
+    out = [[], [], []]
+    for i in range(input_tensor.shape[0]):
+        for j in range(w_out):
+            for k in range(h_out):
+                # drag kernel through image with stride of 1
+                output = weight[:, : , i].reshape(weight.shape[-1], weight.shape[0], -1) @ input_tensor[0, i, j:j+3, k:k+3]
+                # accumulate result
+                out[i].append(output)
+    # convert into numpy array
+    # output = np.array(map(np.concatenate, out))
+    output = np.array(out)
+    print(output.shape)
+    # assert output.shape == (input_tensor.shape[0], h_out, w_out, weight.shape[-1]), output.shape
+    return output.reshape(input_tensor.shape[0], weight.shape[-1], h_out, w_out)
+
+
 
 def test_convolve():
+    input_tensor =  np.random.rand(1, 3, 10, 10) # np.array()  # shape = (1, 3, 10, 10)  NCHW
+    weight = np.random.rand(3, 3, 3, 10)  # np.array()  # shape = (3, 3, 3, 10) H x W x C_i x C_o
+    # output = conv_2d(input_tensor, weight, kernel_size=3)  # shape = (1, 10, 8, 8)
     print('convolve not implemented')
     assert True
 
