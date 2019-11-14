@@ -95,6 +95,35 @@ def test_merge_intervals():
     out = merge_intervals(tst)
     expected = [[1,6],[8,10],[15,18]]
     assert expected == out
+
+
+def num_rooms(arr):
+    arr.sort(key = lambda x: x[0])
+    starts = [[x[0], 0] for x in arr]
+    ends = [[x[1], 1] for x in arr]
+    times = starts + ends
+    times.sort(key = lambda x: x[0])
+    rooms = 0
+    max_rooms = 0
+    for i in times:
+        if i[1] == 0:
+            rooms += 1
+            max_rooms = max(max_rooms, rooms)
+        else:
+            assert i[1] == 1
+            rooms -= 1
+            assert rooms >= 0
+    return max_rooms
+
+
+def test_num_rooms():
+    # number of meeting rooms needed given schedule
+    tst = [[0, 30],[5, 10],[15, 20]]
+    out = num_rooms(tst)
+    assert 2 == out
+    tst = [[7,10],[2,4]]
+    out = num_rooms(tst)
+    assert 1 == out
 # ======================================
 # FAIR
 class SparseVector(object):
@@ -335,32 +364,32 @@ def test_bfs():
 # code implementation: https://victorzhou.com/blog/intro-to-cnns-part-1/
 
 def iterate_regions(image):
-'''
-Generates all possible 3x3 image regions using valid padding.
-- image is a 2d numpy array
-'''
-h, w = image.shape
+    '''
+    Generates all possible 3x3 image regions using valid padding.
+    - image is a 2d numpy array
+    '''
+    h, w = image.shape
 
-for i in range(h - 2):
-  for j in range(w - 2):
-    im_region = image[i:(i + 3), j:(j + 3)]
-    yield im_region, i, j
+    for i in range(h - 2):
+      for j in range(w - 2):
+        im_region = image[i:(i + 3), j:(j + 3)]
+        yield im_region, i, j
 
 
 def forward(input, num_filters):
-'''
-Performs a forward pass of the conv layer using the given input.
-Returns a 3d numpy array with dimensions (h, w, num_filters).
-- input is a 2d numpy array
-'''
-filters = np.random.randn(num_filters, 3, 3)
-h, w = input.shape
-output = np.zeros((h - 2, w - 2, num_filters))
+    '''
+    Performs a forward pass of the conv layer using the given input.
+    Returns a 3d numpy array with dimensions (h, w, num_filters).
+    - input is a 2d numpy array
+    '''
+    filters = np.random.randn(num_filters, 3, 3)
+    h, w = input.shape
+    output = np.zeros((h - 2, w - 2, num_filters))
 
-for im_region, i, j in iterate_regions(input):
-  output[i, j] = np.sum(im_region * filters, axis=(1, 2))
+    for im_region, i, j in iterate_regions(input):
+      output[i, j] = np.sum(im_region * filters, axis=(1, 2))
 
-return output
+    return output
 
 
 def conv_2d(input_tensor, weight, kernel_size):
@@ -637,6 +666,7 @@ def main():
     test_rev_stack()
     test_find_pivot()
     test_merge_intervals()
+    test_num_rooms()
     test_cpu_process_intervals()
 #     test_find_deadlock()
 #     test_rm_bad_parens()
