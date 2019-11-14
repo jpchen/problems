@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import scipy
 import math
-from collections import defaultdict
+from collections import defaultdict, Counter
 from pdb import set_trace as bb
 
 
@@ -124,6 +124,58 @@ def test_num_rooms():
     tst = [[7,10],[2,4]]
     out = num_rooms(tst)
     assert 1 == out
+
+
+def add_binary(a, b):
+    # add two binary strings together
+    if len(a) == 0: return b
+    if len(b) == 0: return a
+    if a[-1] == '1' and b[-1] == '1':
+        return add_binary(add_binary(a[0:-1],b[0:-1]),'1')+'0'
+    if a[-1] == '0' and b[-1] == '0':
+        return add_binary(a[0:-1],b[0:-1])+'0'
+    else:
+        return add_binary(a[0:-1],b[0:-1])+'1'
+
+
+def test_add_binary():
+    pass
+
+
+def task_scheduler(tasks, n):
+    # do this greedily adding most to least
+    # todo figure out max heap impl
+
+    # just counting it
+    # one of two cases, either every task is fittable in the
+    # n intervals or it's not.
+    # if n < num tasks, you will always only need length of list
+    # adding them greedily
+    # if n > num tasks, at most you need the task with most count
+    # times the interval (since thats the min needed to schedule that task)
+    # then you have to add the other tasks that also have that many at the end
+    # everything else is guaranteed to fit in the middle
+    task_counts = list(Counter(tasks).values())
+    M = max(task_counts)
+    Mct = task_counts.count(M)
+    return max(len(tasks), (M - 1) * (N + 1) + Mct)
+
+
+def test_task_scheduler():
+    tasks = ['a', 'a', 'a', 'b', 'b', 'c']
+    assert task_scheduler(tasks, 1) == 6
+    tasks = ['a', 'a', 'a', 'b', 'b', 'c']
+    assert task_scheduler(tasks, 2) == 7
+    tasks = ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'd']
+    assert task_scheduler(tasks, 1) == 9
+    tasks = ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c', 'd']
+    assert task_scheduler(tasks, 1) == 10
+    tasks = ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'd', 'e']
+    assert task_scheduler(tasks, 1) == 10
+    tasks = ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'd', 'd', 'e']
+    assert task_scheduler(tasks, 1) == 11
+
+
 # ======================================
 # FAIR
 class SparseVector(object):
@@ -668,6 +720,8 @@ def main():
     test_merge_intervals()
     test_num_rooms()
     test_cpu_process_intervals()
+    test_add_binary()
+    test_task_scheduler()
 #     test_find_deadlock()
 #     test_rm_bad_parens()
     print("ALL TESTS PASSED!")
