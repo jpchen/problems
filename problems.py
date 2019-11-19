@@ -142,7 +142,7 @@ def test_add_binary():
     pass
 
 
-def task_scheduler(tasks, n):
+def task_scheduler(tasks, N):
     # do this greedily adding most to least
     # todo figure out max heap impl
 
@@ -175,6 +175,76 @@ def test_task_scheduler():
     tasks = ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'd', 'd', 'e']
     assert task_scheduler(tasks, 1) == 11
 
+
+def three_sum(arr, n):
+    # find all sets of three numbers that add to n
+    arr.sort()
+    res = []
+    for i in range(len(arr) - 2):
+        l, r = i + 1, len(arr) - 1
+        while l < r:
+            sum_ = arr[i] + arr[l] + arr[r]
+            if sum_ < n:
+                l += 1
+            elif sum_ > n:
+                r -= 1
+            else:
+                res.append([arr[i], arr[l], arr[r]])
+                break
+    return res
+
+
+def test_three_sum():
+    test = [-1, 0, 1, 2, -1, -4]
+    exp = [[-1, 0, 1], [-1, -1, 2]]
+    three_sum(test, 0) == exp
+
+
+def min_window_substring(string, sub):
+    # find all sets of three numbers that add to n
+    arr.sort()
+    res = []
+    for i in range(len(arr) - 2):
+        l, r = i + 1, len(arr) - 1
+        while l < r:
+            sum_ = arr[i] + arr[l] + arr[r]
+            if sum_ < n:
+                l += 1
+            elif sum_ > n:
+                r -= 1
+            else:
+                res.append([arr[i], arr[l], arr[r]])
+                break
+    return res
+
+def minWindow(s, t):
+    need = Counter(t)            #hash table to store char frequency
+    missing = len(t)                         #total number of chars we care
+    start, end = 0, 0
+    i = 0
+    for j, char in enumerate(s, 1):          #index j from 1
+        if need[char] > 0:
+            missing -= 1
+        need[char] -= 1
+        if missing == 0:                     #match all chars
+            while i < j and need[s[i]] < 0:  #remove chars to find the real start
+                need[s[i]] += 1
+                i += 1
+            need[s[i]] += 1                  #make sure the first appearing char satisfies need[char]>0
+            missing += 1                     #we missed this first char, so add missing by 1
+            if end == 0 or j-i < end-start:  #update window
+                start, end = i, j
+            i += 1                           #update i to start+1 for next window
+    return s[start:end]
+
+
+def test_min_window_substring():
+    string = "ADOBECODEBANC"
+    sub = "ABC"
+    minWindow(string, sub) == "BANC"
+    string = "AEBECEEEEEBCA"
+    sub = "ABC"
+    minWindow(string, sub) == "BCA"
 
 # ======================================
 # FAIR
@@ -210,7 +280,6 @@ def test_sparse_dot():
     assert out == 7
 
 
-# ======================================
 """
 sample from a vector without replacement
 """
@@ -222,6 +291,43 @@ def test_sample_vector():
     pass
 
 
+def num_trees(trees, fov):
+    #           /
+    #  *       /  *
+    #         /   *                             \
+    #       0        *                          \   x
+    #  **    \                                  -----
+    #        \    *
+    #        \
+    # trees, fov (radians)
+    # -> 4
+    best, angles = [], []
+    for t in trees:
+        # compute angles
+        x = math.atan2(t[1], t[0])  # returns [-math.pi, math.pi]
+        if x < 0:
+            x += math.pi * 2
+        angles.append(x)
+    for a in angles:
+        assert 0. <= a <= math.pi * 2
+    # discretized search. can be made arbitrarily precise
+    for i in range(360):
+        curr = []
+        min_ang = i * math.pi / 180.
+        this_fov = fov + min_ang
+        for a, t in zip(angles, trees):
+            # check if point is within fov
+            if min_ang <= a <= this_fov:
+                curr.append(t)
+        if len(curr) > len(best):
+            best = curr.copy()
+    return len(best)
+
+
+def test_num_trees():
+    trees = [[1,1], [2, 0], [3, -1], [-3, -1]]
+    angle = math.pi / 2
+    assert num_trees(trees, angle) == 2
 # ======================================
 def find_pivot(arr):
     sum_ = sum(arr)
@@ -722,6 +828,9 @@ def main():
     test_cpu_process_intervals()
     test_add_binary()
     test_task_scheduler()
+    test_three_sum()
+    test_min_window_substring()
+    test_num_trees()
 #     test_find_deadlock()
 #     test_rm_bad_parens()
     print("ALL TESTS PASSED!")
