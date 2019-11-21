@@ -230,11 +230,11 @@ def minWindow(s, t):
             while i < j and need[s[i]] < 0:  #remove chars to find the real start
                 need[s[i]] += 1
                 i += 1
-            need[s[i]] += 1                  #make sure the first appearing char satisfies need[char]>0
-            missing += 1                     #we missed this first char, so add missing by 1
             if end == 0 or j-i < end-start:  #update window
                 start, end = i, j
-            i += 1                           #update i to start+1 for next window
+            need[s[i]] += 1
+            missing += 1
+            i += 1
     return s[start:end]
 
 
@@ -714,6 +714,48 @@ def test_same_bsts():
     assert not same_bsts(a, c)
 
 
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.children = []
+
+    def add(self, x):
+        if not isinstance(x, Node):
+            x = Node(x)
+        self.children.append(x)
+
+
+def largest_two_leaves(root):
+    # tesla question:
+    # return the largest two leaves by iteratively
+    # by ONLY looking at the largest two nodes at every step
+    def get_max_2(x):
+        x.sort(key = lambda z: z.val)
+        return [x[-2], x[-1]]
+    x = get_max_2(root.children)
+    while(x):
+        assert len(x) == 2
+        i = []
+        for z in x:
+            if z.children:
+                i += z.children
+            else:
+                return get_max_2(x)
+        x = get_max_2(i)
+
+
+def test_largest_two_leaves():
+    a = Node(1.)
+    b = Node(0.8)
+    b.children = [Node(0.3), Node(0.4), Node(0.7)]
+    c = Node(0.7)
+    c.children = [Node(0.1), Node(2.4), Node(0.6)]
+    d = Node(0.6)
+    d.children = [Node(200.), Node(2.), Node(3.4)]
+    a.children = [b, c, d]
+    fst, snd = largest_two_leaves(a)
+    assert fst.val == 0.7
+    assert snd.val == 2.4
 
 # ======================================
 # DYNAMIC PROGRAMMING
@@ -831,6 +873,7 @@ def main():
     test_three_sum()
     test_min_window_substring()
     test_num_trees()
+    test_largest_two_leaves()
 #     test_find_deadlock()
 #     test_rm_bad_parens()
     print("ALL TESTS PASSED!")
