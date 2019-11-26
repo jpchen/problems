@@ -4,6 +4,16 @@ import scipy
 import math
 from collections import defaultdict, Counter
 from pdb import set_trace as bb
+import colors
+
+
+def test(x):
+    print(colors.magenta % "Running {}".format(x.__name__))
+    o = x()
+    if o == -1:
+        print(colors.yellow % "NOT IMPLEMENTED")
+    else:
+        print(colors.green % "OK")
 
 
 # twitter
@@ -30,6 +40,7 @@ class Multinomial(object):
                 return v_i
         return v[-1]
 
+#test
 def test_multinomial():
     sampler = Multinomial()
     for i in range(10000):
@@ -72,6 +83,7 @@ def rm_bad_parens(string):
     return out
 
 
+@test
 def test_rm_bad_parens():
     x = "[([)])"
 #     assert not _check_if_valid(x) == []
@@ -90,6 +102,7 @@ def merge_intervals(arr):
     return out
 
 
+@test
 def test_merge_intervals():
     tst = [[1,3],[2,6],[8,10],[15,18]]
     out = merge_intervals(tst)
@@ -116,6 +129,7 @@ def num_rooms(arr):
     return max_rooms
 
 
+@test
 def test_num_rooms():
     # number of meeting rooms needed given schedule
     tst = [[0, 30],[5, 10],[15, 20]]
@@ -138,6 +152,7 @@ def add_binary(a, b):
         return add_binary(a[0:-1],b[0:-1])+'1'
 
 
+@test
 def test_add_binary():
     pass
 
@@ -161,6 +176,7 @@ def task_scheduler(tasks, N):
     return max(len(tasks), (M - 1) * (N + 1) + Mct)
 
 
+@test
 def test_task_scheduler():
     tasks = ['a', 'a', 'a', 'b', 'b', 'c']
     assert task_scheduler(tasks, 1) == 6
@@ -194,6 +210,7 @@ def three_sum(arr, n):
     return res
 
 
+@test
 def test_three_sum():
     test = [-1, 0, 1, 2, -1, -4]
     exp = [[-1, 0, 1], [-1, -1, 2]]
@@ -238,6 +255,7 @@ def minWindow(s, t):
     return s[start:end]
 
 
+@test
 def test_min_window_substring():
     string = "ADOBECODEBANC"
     sub = "ABC"
@@ -246,6 +264,22 @@ def test_min_window_substring():
     sub = "ABC"
     minWindow(string, sub) == "BCA"
 
+
+def leftmost_ones(x):
+    pass
+
+
+def test_leftmost_ones(x):
+    pass
+
+
+def lca(x):
+    # lca of a binary tree
+    pass
+
+
+def test_lca(x):
+    pass
 # ======================================
 # FAIR
 class SparseVector(object):
@@ -271,6 +305,7 @@ class SparseVector(object):
         return out
 
 
+@test
 def test_sparse_dot():
     v1 = np.array([1., 2, 3, 4])
     v2 = np.array([1., 0, 2, 0])
@@ -287,6 +322,7 @@ def sample_vector():
     pass
 
 
+@test
 def test_sample_vector():
     pass
 
@@ -324,6 +360,7 @@ def num_trees(trees, fov):
     return len(best)
 
 
+@test
 def test_num_trees():
     trees = [[1,1], [2, 0], [3, -1], [-3, -1]]
     angle = math.pi / 2
@@ -340,6 +377,7 @@ def find_pivot(arr):
     return -1
 
 
+@test
 def test_find_pivot():
     out = find_pivot([1, 7, 3, 6, 5, 6])
     assert out == 3
@@ -365,6 +403,7 @@ def find_deadlock(arr):
     return 0
 
 
+@test
 def test_find_deadlock():
     lines = ['1 0 1',
              '2 0 2',
@@ -408,6 +447,7 @@ def cpu_process_intervals(arr):
     return out
 
 
+@test
 def test_cpu_process_intervals():
     input = ['f1 True 0',
         'f2 True 2',
@@ -467,6 +507,7 @@ def dfs(node, graph):
     return out
 
 
+@test
 def test_dfs():
     g = Graph()
     g.addEdge(0, 1)
@@ -500,6 +541,7 @@ def bfs(root, graph):
     return out
 
 
+@test
 def test_bfs():
     g = Graph()
     g.addEdge(0, 1)
@@ -572,6 +614,7 @@ def conv_2d(input_tensor, weight, kernel_size):
 
 
 
+@test
 def test_convolve():
     input_tensor =  np.random.rand(1, 3, 10, 10) # np.array()  # shape = (1, 3, 10, 10)  NCHW
     weight = np.random.rand(3, 3, 3, 10)  # np.array()  # shape = (3, 3, 3, 10) H x W x C_i x C_o
@@ -586,6 +629,7 @@ def bst(mat, stride):
     # perform a convolution
     pass
 
+@test
 def test_bst():
     print('convolve not implemented')
     assert True
@@ -609,6 +653,7 @@ def permute(lst):
             out.append([m] + p)
     return out
 
+@test
 def test_permute():
     out = permute([1,2,3])
     ans = [
@@ -632,6 +677,7 @@ def subarray(arr, start, end, out):
         out.append(arr[start:end + 1])
         return subarray(arr, start + 1, end, out)
 
+@test
 def test_subarray():
     arr = [1,2,3]
     out = subarray(arr, 0, 0, [])
@@ -652,6 +698,7 @@ def rev_stack(stack, new_stack):
     new_stack.append(stack.pop())
     return rev_stack(stack, new_stack)
 
+@test
 def test_rev_stack():
     stack = [1,2,3, 4]
     out = rev_stack(stack, [])
@@ -672,6 +719,7 @@ def mypow(x, n):
         return 1. / out
     return out
 
+@test
 def test_mypow():
     out = mypow(2,4)
     assert out == 2 ** 4, out
@@ -706,6 +754,7 @@ def same_bsts(a, b):
         return same_bsts(a[1:], b)
 
 
+@test
 def test_same_bsts():
     a = [8, 3, 6, 1, 4, 7, 10, 14, 13]
     b = [8, 10, 14, 3, 6, 4, 1, 7, 13]
@@ -728,6 +777,7 @@ class Node:
 def largest_two_leaves(root):
     # tesla question:
     # return the largest two leaves by iteratively
+    # beam search
     # by ONLY looking at the largest two nodes at every step
     def get_max_2(x):
         x.sort(key = lambda z: z.val)
@@ -744,6 +794,7 @@ def largest_two_leaves(root):
         x = get_max_2(i)
 
 
+@test
 def test_largest_two_leaves():
     a = Node(1.)
     b = Node(0.8)
@@ -768,6 +819,7 @@ def lis(arr):
                 lis_arr[i] = max(lis_arr[i], 1 + lis_arr[j])
     return max(lis_arr)
 
+@test
 def test_lis():
     arr = [50, 3, 10, 7, 40, 80]
     out = lis(arr)
@@ -788,6 +840,7 @@ def l_sum_subarray(arr):
             max_ending_here = 0
     return max_so_far, arr[start:end]
 
+@test
 def test_l_sum_subarray():
     arr = [-2, -3, 4, -1, -2, 1, 5, -3]
     out, sub = l_sum_subarray(arr)
@@ -812,6 +865,7 @@ def knapsack(val, weight, limit):
     return a.max()
 
 
+@test
 def test_knapsack():
     val = [50, 80, 80, 90, 150]
     wt = [10, 12, 8, 20, 30]
@@ -837,6 +891,7 @@ def bit_swap(a, b):
     a = a ^ b
     return a, b
 
+@test
 def test_swap():
     x = 2
     y = 64
@@ -876,7 +931,7 @@ def main():
     test_largest_two_leaves()
 #     test_find_deadlock()
 #     test_rm_bad_parens()
-    print("ALL TESTS PASSED!")
+    print(colors.green % "ALL TESTS PASSED!")
 
 
 if __name__ == "__main__":
