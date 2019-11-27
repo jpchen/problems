@@ -565,7 +565,34 @@ def test_bfs():
 
 
 # ======================================
-# snapchat and tesla
+# cruise
+def linear_interp(points, point):
+    i = 0
+    while point > points[i][0]:
+        i += 1
+    slope = float(points[i][1] - points[i - 1][1]) / (points[i][0] - points[i - 1][0])
+    intercept = points[i][1] - slope * points[i][0]
+    return point * slope + intercept
+
+
+@test
+def test_linear_interp():
+    points = [[0, 2], [2, 1], [4, 3], [5, 1]]
+    point = 3
+    assert linear_interp(points, point) == 2
+
+
+def k_means(points):
+    pass
+
+
+@test
+def test_k_means():
+    return -1
+
+
+# ======================================
+# snapchat cv and tesla autopilot
 # overview: http://cs231n.github.io/convolutional-networks/
 # code implementation: https://victorzhou.com/blog/intro-to-cnns-part-1/
 
@@ -625,16 +652,6 @@ def test_convolve():
     input_tensor =  np.random.rand(1, 3, 10, 10) # np.array()  # shape = (1, 3, 10, 10)  NCHW
     weight = np.random.rand(3, 3, 3, 10)  # np.array()  # shape = (3, 3, 3, 10) H x W x C_i x C_o
     # output = conv_2d(input_tensor, weight, kernel_size=3)  # shape = (1, 10, 8, 8)
-    return -1
-
-
-# ======================================
-# BST
-def bst(mat, stride):
-    pass
-
-@test
-def test_bst():
     return -1
 
 
