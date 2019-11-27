@@ -221,24 +221,7 @@ def test_three_sum():
     three_sum(test, 0) == exp
 
 
-def min_window_substring(string, sub):
-    # find all sets of three numbers that add to n
-    arr.sort()
-    res = []
-    for i in range(len(arr) - 2):
-        l, r = i + 1, len(arr) - 1
-        while l < r:
-            sum_ = arr[i] + arr[l] + arr[r]
-            if sum_ < n:
-                l += 1
-            elif sum_ > n:
-                r -= 1
-            else:
-                res.append([arr[i], arr[l], arr[r]])
-                break
-    return res
-
-def minWindow(s, t):
+def min_window_substring(s, t):
     need = Counter(t)            #hash table to store char frequency
     missing = len(t)                         #total number of chars we care
     start, end = 0, 0
@@ -263,18 +246,38 @@ def minWindow(s, t):
 def test_min_window_substring():
     string = "ADOBECODEBANC"
     sub = "ABC"
-    minWindow(string, sub) == "BANC"
+    min_window_substring(string, sub) == "BANC"
     string = "AEBECEEEEEBCA"
     sub = "ABC"
-    minWindow(string, sub) == "BCA"
+    min_window_substring(string, sub) == "BCA"
 
 
 def leftmost_ones(x):
-    pass
+    # find the 1 indexed leftmost ones in a matrix
+    i, j = 0, len(x[0]) - 1
+    while j > -1 and i < len(x):
+        if x[i][j]:
+            j -= 1
+        else:
+            i += 1
+    return j + 2
 
 
-def test_leftmost_ones(x):
-    pass
+@test
+def test_leftmost_ones():
+    mat = [[0, 0, 0, 1],
+           [0, 0, 1, 1],
+           [0, 0, 1, 1],
+           [0, 1, 1, 1],
+           [0, 0, 0, 1],
+          ]
+    assert leftmost_ones(mat) == 2
+    mat = [[0, 1],
+           [1, 1],
+           [1, 1],
+           [0, 0],
+          ]
+    assert leftmost_ones(mat) == 1
 
 
 def lca(x):
@@ -282,8 +285,9 @@ def lca(x):
     pass
 
 
-def test_lca(x):
-    pass
+@test
+def test_lca():
+    return -1
 # ======================================
 # FAIR
 class SparseVector(object):
