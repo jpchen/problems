@@ -81,7 +81,7 @@ def rm_bad_parens(s):
 @test
 def test_rm_bad_parens():
     x = "[([)])"
-    assert rm_bad_parens(x) == ['[()]', '([])'], rm_bad_parens(x)
+    assert set(rm_bad_parens(x)) == {'[()]', '([])'}
 
 
 def merge_intervals(arr):
@@ -571,6 +571,33 @@ def test_linear_interp():
     points = [[0, 2], [2, 1], [4, 3], [5, 1]]
     point = 3
     assert linear_interp(points, point) == 2
+
+
+def num_islands(grid):
+    # from leetcode
+    def sink(i, j):
+        # if the point is an island
+        if 0 <= i < len(grid) and 0 <= j < len(grid[i]) and grid[i][j] == 1:
+            # turn that point into water
+            grid[i][j] = 0
+            # iterate on the adjacent n s e w points
+            # this list would set all adjacent points (points on the same island) to water
+            list(map(sink, (i+1, i-1, i, i), (j, j, j+1, j-1)))
+            # count = 1 for one island
+            return 1
+        # if the point is water
+        return 0
+    # return the sum for all points in the grid
+    return sum(sink(i, j) for i in range(len(grid)) for j in range(len(grid[i])))
+
+
+@test
+def test_num_islands():
+    grid = [[1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [0, 0, 1, 0, 0],
+            [0, 0, 0, 1, 1]]
+    assert num_islands(grid) == 3, num_islands(grid)
 
 
 def k_means(points):
