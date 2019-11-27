@@ -8,7 +8,7 @@ from termcolor import cprint
 
 
 def test(x):
-    cprint("Running {}".format(x.__name__), 'magenta', end='...')
+    cprint("{}".format(x.__name__), 'magenta', end='...')
     try:
         o = x()
         if o == -1:
@@ -53,46 +53,35 @@ def test_multinomial():
 # ======================================
 # facebook
 
-def _check_if_valid(string):
-    left = [0, 0]
-    right = [0, 0]
-    for i in string:
-        if i == "[":
-            left[1] += 1
-        elif i == "(":
-            left[0] += 1
-        elif i == "]":
-            if left[1]:
-                left[1] -= 1
+def rm_bad_parens(s):
+    def isvalid(s):
+        q = []
+        for c in s:
+            if c == '(' or c == '[':
+                q.append(c)
             else:
-                right[1] += 1
-        elif i == ")":
-            if left[0]:
-                left[0] -= 1
-            else:
-                right[0] += 1
-    # return how many need to be removed
-    return left, right
-
-
-def rm_bad_parens(string):
-    left, right = _check_if_valid(string)
-    copy = extra.copy()
-    str_copy = string.copy()
-    out = set()
-    for i in extra:
-        for l in str_copy:
-            if i == l:
-                str_copy[:i] + str_copy[i+1:]
-    return out
+                if not q:
+                    return False
+                if c == ')':
+                    if q.pop() != '(':
+                        return False
+                if c == ']':
+                    if q.pop() != '[':
+                        return False
+        return not len(q)
+    # this is from leetcode
+    level = {s}
+    while True:
+        valid = list(filter(isvalid, level))
+        if valid:
+            return valid
+        level = {s[:i] + s[i+1:] for s in level for i in range(len(s))}
 
 
 @test
 def test_rm_bad_parens():
     x = "[([)])"
-#     assert not _check_if_valid(x) == []
-    x = "[(([]))]"
-    x = "[(([]]))]"
+    assert rm_bad_parens(x) == ['[()]', '([])'], rm_bad_parens(x)
 
 
 def merge_intervals(arr):
@@ -288,6 +277,8 @@ def lca(x):
 @test
 def test_lca():
     return -1
+
+
 # ======================================
 # FAIR
 class SparseVector(object):
@@ -332,7 +323,7 @@ def sample_vector():
 
 @test
 def test_sample_vector():
-    pass
+    return -1
 
 
 def num_trees(trees, fov):
@@ -653,6 +644,13 @@ def test_convolve():
     weight = np.random.rand(3, 3, 3, 10)  # np.array()  # shape = (3, 3, 3, 10) H x W x C_i x C_o
     # output = conv_2d(input_tensor, weight, kernel_size=3)  # shape = (1, 10, 8, 8)
     return -1
+
+
+# ======================================
+# openai
+def backprop():
+    # implement backprop for sort(x) / med(x)
+    pass
 
 
 # ======================================
