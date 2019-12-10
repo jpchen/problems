@@ -150,6 +150,23 @@ def test_add_binary():
     pass
 
 
+def binary_search(x, val):
+    if len(x) == 1:
+        return x[0]
+    half = int(len(x) / 2)
+    if val < x[half]:
+        return binary_search(x[:half], val)
+    else:
+        return binary_search(x[half:], val)
+
+
+@test
+def test_binary_search():
+    x = [1,2,3,4,5,6,7]
+    assert binary_search(x, 2.2) == 2
+
+
+
 def task_scheduler(tasks, N):
     # do this greedily adding most to least
     # todo figure out max heap impl
@@ -162,7 +179,7 @@ def task_scheduler(tasks, N):
     # if n > num tasks, at most you need the task with most count
     # times the interval (since thats the min needed to schedule that task)
     # then you have to add the other tasks that also have that many at the end
-    # everything else is guaranteed to fit in the middle
+    ## everything else is guaranteed to fit in the middle
     task_counts = list(Counter(tasks).values())
     M = max(task_counts)
     Mct = task_counts.count(M)
@@ -324,6 +341,135 @@ def sample_vector():
 @test
 def test_sample_vector():
     return -1
+
+
+# ======================================
+# Google
+
+#----
+# q's i was asked
+def right_side_view():
+    # https://www.geeksforgeeks.org/print-right-view-binary-tree-2/
+    pass
+
+
+def compare_right_side_view():
+    # given two trees, return if their right side views are the same
+    # in single pass
+    pass
+
+
+def mm():
+    pass
+
+
+def sample_circle_uniformly():
+    pass
+#-----
+
+
+def max_sweetness(A, K):
+    left, right = 1, sum(A) / (K + 1)
+    while left < right:
+        mid = int((left + right + 1) / 2)
+        cur = cuts = 0
+        for a in A:
+            cur += a
+            if cur >= mid:
+                cuts += 1
+                cur = 0
+        if cuts > K:
+            left = mid
+        else:
+            right = mid - 1
+    return right
+
+
+@test
+def test_sweetness():
+    s = [1,2,3,4,5,6,7,8,9]
+    K = 5
+    assert max_sweetness(s, K) == 6,max_sweetness(s, K)
+    s = [5,6,7,8,9,1,2,3,4]
+    K = 8
+    assert max_sweetness(s, K) == 1,max_sweetness(s, K)
+
+
+def odd_even_jump(l):
+    pass
+
+
+def test_odd_even_jump():
+    x = [10,13,12,14,15]
+    assert odd_even_jump(x) == 2
+    x = [2,3,1,1,4]
+    assert odd_even_jump(x) == 3
+
+
+class LRUCache:
+    def __init__(self, cap):
+        self.cap = cap
+        self.val = OrderedDict()
+
+    def get(self, val):
+        pass
+
+    def put(self, val):
+        # Set or insert the value if the key is not already present.
+        # When the cache reached its capacity, it should invalidate
+        # the least recently used item before inserting a new item.
+        pass
+
+
+@test
+def testLRUCache():
+    return -1
+    cache = LRUCache()
+    cache.put(1, 1)
+    cache.put(2, 2)
+    assert cache.get(1) == 1
+    cache.put(3, 3)
+    assert cache.get(2) == -1
+    cache.put(4, 4)
+    assert cache.get(1) == -1
+    assert cache.get(3) == 3
+    cache.get(4)
+
+
+def coke_machine(buttons, target):
+    # Find out if it's possible to get the target range of coke.
+    # You can press buttons any number of times.
+    if memo is None:
+        memo = set()
+    if cur_sum is None:
+        cur_sum = (0, 0)
+    if cur_sum in memo:
+        return False
+    if cur_sum[0] >= target[0] and cur_sum[1] <= target[1]:
+        return True
+    if cur_sum[1] > target[1]:
+        memo.add(cur_sum)
+        return False
+    for button in buttons:
+        if coke_machine(buttons, target, (cur_sum[0] + button[0],
+                                          cur_sum[1] + button[1])):
+            return True
+    memo.add(cur_sum)
+    return False
+    pass
+
+
+def test_coke_machine():
+    buttons = [[100, 120], [200, 240], [400, 410]]
+    target = [100, 110]
+    assert not coke_machine(buttons, target)
+    buttons = [[100, 120], [200, 240], [400, 410]]
+    target = [90, 120]
+    assert not coke_machine(buttons, target)
+    buttons = [[100, 120], [200, 240], [400, 410]]
+    target = [300, 360]
+    assert coke_machine(buttons, target)
+
 
 
 def num_trees(trees, fov):
