@@ -826,6 +826,70 @@ def backprop():
     pass
 
 
+_MEM_SIZE = 10
+
+"""
+given a contiguous memory size, implement malloc and free
+malloc: returns address of the memory if there is room, otherwise throw error
+free: frees the memory
+"""
+class Memory(object):
+    def __init__(self):
+        # dict keyed on start idx, value end idx
+#         self.memory = OrderedDict()
+        self.memory = {}
+
+    def malloc(self, byte):
+        assert byte < _MEM_SIZE and byte > 0
+        if len(self.memory.keys()) == 0:
+            self.memory[0] = byte - 1
+            return 0
+        else:
+            prev_v = self.memory[0]
+            curr = byte + prev_v
+            for k, v in sorted(self.memory.items()):
+                if k == 0:
+                    continue
+                if k > curr:
+                    self.memory[prev_v+1] = curr
+                    return prev_v + 1
+                curr = byte + v
+                prev_v = v
+                if curr > _MEM_SIZE - 1:
+                    raise ValueError('could not insert')
+            if curr < _MEM_SIZE:
+                self.memory[prev_v + 1] = curr
+                return prev_v + 1
+            else:
+                raise ValueError('could not insert')
+
+    def free(self, idx):
+        if idx in self.memory.keys():
+            del self.memory[idx]
+        else:
+            raise ValueError('key not found')
+
+
+@test
+def test_mem():
+    memory = Memory()
+    idx_0 = memory.malloc(3)
+    idx_1 = memory.malloc(4)
+    try:
+        memory.malloc(4)
+        assert False
+    except ValueError:
+        pass
+    try:
+        memory.free(5)
+        assert False
+    except ValueError:
+        pass
+    assert len(memory.memory.keys()) == 2
+    memory.free(3)
+    assert len(memory.memory.keys()) == 1
+
+
 # ======================================
 # RECURSION
 def permute(lst):
